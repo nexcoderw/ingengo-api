@@ -1,10 +1,21 @@
 {
   "name": "ingengo-api",
   "version": "0.0.1",
-  "description": "Ingengo API is a backend application built with NestJS and Prisma, designed to provide a robust and scalable solution for managing budgets and financial data. It offers a comprehensive set of features for handling user authentication, budget management, and financial analytics, making it an ideal choice for developers looking to create a powerful budgeting application.",
-  "author": "Nexcode Africa",
+  "description": "NestJS API for Ingengo authentication, payment records, income, and financial-message imports.",
+  "author": {
+    "name": "KAJUGA Daniels",
+    "url": "https://github.com/kajugadaniels"
+  },
+  "contributors": [{ "name": "Nexcode Africa" }],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nexcoderw/ingengo-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nexcoderw/ingengo-api/issues"
+  },
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
