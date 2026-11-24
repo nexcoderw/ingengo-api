@@ -74,7 +74,7 @@ export class ListTransactionHistoryQueryDto {
 
   @ApiPropertyOptional({
     description:
-      'Search recipient, sender, Budgetify reference, or provider reference.',
+      'Search recipient, sender, Ingengo reference, or provider reference.',
     maxLength: 120,
   })
   @Transform(({ value }) => normalizeSearch(value))
