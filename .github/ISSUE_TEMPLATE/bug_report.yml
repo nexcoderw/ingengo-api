@@ -1,0 +1,27 @@
+name: Bug report
+description: Report a reproducible Ingengo API problem using synthetic data.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report vulnerabilities through the [security policy](https://github.com/nexcoderw/ingengo-api/security/policy).
+        Keep credentials, tokens, and real payment data out of this public issue.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: Explain what you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include the affected API route and a minimal example using synthetic inputs.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit or version
+      description: Include your revision and Node.js version when known.
