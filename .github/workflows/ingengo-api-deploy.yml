@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: budgetify-api-production
+  group: ingengo-api-production
   cancel-in-progress: false
 
 jobs:
@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/budgetify?schema=public
-      DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/budgetify?schema=public
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ingengo?schema=public
+      DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ingengo?schema=public
       JWT_ACCESS_SECRET: 12345678901234567890123456789012
       JWT_REFRESH_SECRET: 12345678901234567890123456789012
       OTP_HASH_SECRET: 12345678901234567890123456789012
@@ -60,45 +60,57 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: production
+    env:
+      DEPLOY_USER: ingengo
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v6
 
       - name: Configure SSH
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
         run: |
+          : "${DEPLOY_HOST:?Set DEPLOY_HOST in the production environment}"
+          : "${SSH_PRIVATE_KEY:?Set SSH_PRIVATE_KEY in the production environment}"
+          : "${SSH_KNOWN_HOSTS:?Set SSH_KNOWN_HOSTS in the production environment}"
           install -m 700 -d ~/.ssh
-          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/budgetify_deploy_key
-          chmod 600 ~/.ssh/budgetify_deploy_key
-          printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/ingengo_deploy_key
+          chmod 600 ~/.ssh/ingengo_deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+          ssh-keygen -y -P '' -f ~/.ssh/ingengo_deploy_key >/dev/null
+          ssh-keygen -F "$DEPLOY_HOST" -f ~/.ssh/known_hosts >/dev/null || {
+            echo 'SSH_KNOWN_HOSTS needs the trusted host key for DEPLOY_HOST.' >&2
+            exit 1
+          }
 
       - name: Package exact commit
         env:
           GIT_SHA: ${{ github.sha }}
-        run: git archive --format=tar.gz --output="budgetify-api-${GIT_SHA}.tar.gz" "${GIT_SHA}"
+        run: git archive --format=tar.gz --output="ingengo-api-${GIT_SHA}.tar.gz" "${GIT_SHA}"
 
       - name: Upload release artifact
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           GIT_SHA: ${{ github.sha }}
         run: |
-          scp -i ~/.ssh/budgetify_deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes \
-            "budgetify-api-${GIT_SHA}.tar.gz" \
-            "${DEPLOY_USER}@${DEPLOY_HOST}:/var/www/budgetify/incoming/"
+          scp -i ~/.ssh/ingengo_deploy_key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "ingengo-api-${GIT_SHA}.tar.gz" \
+            "${DEPLOY_USER}@${DEPLOY_HOST}:/var/www/ingengo/incoming/"
 
       - name: Deploy exact commit
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           GIT_SHA: ${{ github.sha }}
         run: |
-          ssh -i ~/.ssh/budgetify_deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes \
+          ssh -i ~/.ssh/ingengo_deploy_key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "${DEPLOY_USER}@${DEPLOY_HOST}" \
-            "/var/www/budgetify/bin/budgetify-api-deploy.sh ${GIT_SHA}"
+            "/var/www/ingengo/bin/ingengo-api-deploy.sh ${GIT_SHA}"
 
       - name: Remove local deployment credentials
         if: always()
         run: |
-          rm -f ~/.ssh/budgetify_deploy_key
-          rm -f "budgetify-api-${{ github.sha }}.tar.gz"
+          rm -f ~/.ssh/ingengo_deploy_key
+          rm -f "ingengo-api-${{ github.sha }}.tar.gz"
