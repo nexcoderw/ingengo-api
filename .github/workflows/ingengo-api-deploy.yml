@@ -61,6 +61,7 @@ jobs:
     timeout-minutes: 20
     environment: production
     env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST || '13.140.133.199' }}
       DEPLOY_USER: ingengo
     steps:
       - name: Checkout exact commit
@@ -68,11 +69,9 @@ jobs:
 
       - name: Configure SSH
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
         run: |
-          : "${DEPLOY_HOST:?Set DEPLOY_HOST in the production environment}"
           : "${SSH_PRIVATE_KEY:?Set SSH_PRIVATE_KEY in the production environment}"
           : "${SSH_KNOWN_HOSTS:?Set SSH_KNOWN_HOSTS in the production environment}"
           install -m 700 -d ~/.ssh
@@ -93,7 +92,6 @@ jobs:
 
       - name: Upload release artifact
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           GIT_SHA: ${{ github.sha }}
         run: |
           scp -i ~/.ssh/ingengo_deploy_key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
@@ -102,7 +100,6 @@ jobs:
 
       - name: Deploy exact commit
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           GIT_SHA: ${{ github.sha }}
         run: |
           ssh -i ~/.ssh/ingengo_deploy_key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
