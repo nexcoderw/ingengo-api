@@ -39,7 +39,7 @@ export class CreateFinancialMessageImportDto {
     minimum: 1,
     maximum: 10000,
     description:
-      'The Budgetify Shortcut version. Legacy pilot Shortcuts may omit it until enforcement is enabled.',
+      'The Ingengo Shortcut version. Legacy pilot Shortcuts may omit it until enforcement is enabled.',
   })
   @IsOptional()
   @Type(() => Number)
