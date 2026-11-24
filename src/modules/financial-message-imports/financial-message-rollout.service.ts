@@ -41,7 +41,7 @@ export class FinancialMessageRolloutService {
         statusCode: HTTP_UPGRADE_REQUIRED,
         error: 'Shortcut update required',
         message:
-          'Update your Budgetify Shortcut before importing another message.',
+          'Update your Ingengo Shortcut before importing another message.',
         currentShortcutVersion: this.config.currentShortcutVersion,
         minimumShortcutVersion: this.config.minimumShortcutVersion,
         shortcutInstallUrl: this.config.shortcutInstallUrl,
