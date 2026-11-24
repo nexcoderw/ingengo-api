@@ -103,4 +103,4 @@ shortcut_status="$(curl --silent --output /dev/null --write-out '%{http_code}' \
 [[ "$shortcut_status" == '401' ]] || fail "Shortcut endpoint guard returned HTTP ${shortcut_status}; expected 401 without a credential"
 pass 'Shortcut endpoint is public, reachable, and credential-protected'
 
-printf '\nBudgetify iPhone Shortcut pilot verification passed.\n'
+printf '\nIngengo iPhone Shortcut pilot verification passed.\n'
