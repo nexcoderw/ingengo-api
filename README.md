@@ -1,16 +1,26 @@
+<div align="center">
+
 # Ingengo API
 
 **The open-source NestJS backend for Ingengo payments, income, and financial-message review.**
 
-[Live API reference](https://ingengo-api.nexcode.africa/api/v1/docs) ·
-[Flutter app](https://github.com/nexcoderw/ingengo-app) ·
-[Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [MIT License](LICENSE)
+[![Node.js 24](https://img.shields.io/badge/Node.js-24-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![NestJS 11](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Prisma 7](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-2E7D32)](LICENSE)
 
 Ingengo helps people in Rwanda organize payment and income records. This repository
 serves the [Ingengo Flutter client](https://github.com/nexcoderw/ingengo-app) and
 owns the versioned HTTP API and PostgreSQL schema. The API quotes and records
 payments, tracks the evidence behind their status, and imports eligible payment
 messages for review. Payment providers handle the actual movement of funds.
+
+[Ingengo App repository](https://github.com/nexcoderw/ingengo-app) ·
+[Live API reference](https://ingengo-api.nexcode.africa/api/v1/docs) ·
+[Local setup](#getting-started) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
+
+</div>
 
 ## Contents
 
