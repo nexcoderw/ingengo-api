@@ -2,15 +2,15 @@
 
 set -Eeuo pipefail
 
-readonly PROJECT_NAME="budgetify"
-readonly APP_NAME="budgetify-api"
+readonly PROJECT_NAME="ingengo"
+readonly APP_NAME="ingengo-api"
 readonly BASE_DIR="/var/www/${PROJECT_NAME}"
 readonly RELEASES_DIR="${BASE_DIR}/releases/api"
 readonly SHARED_ENV="${BASE_DIR}/shared/api/.env.production"
 readonly LIVE_LINK="${BASE_DIR}/api"
 readonly INCOMING_DIR="${BASE_DIR}/incoming"
-readonly PM2_CONFIG="${BASE_DIR}/shared/pm2/budgetify-api.ecosystem.config.cjs"
-readonly DEPLOY_LOCK="${BASE_DIR}/shared/budgetify-api-deploy.lock"
+readonly PM2_CONFIG="${BASE_DIR}/shared/pm2/ingengo-api.ecosystem.config.cjs"
+readonly DEPLOY_LOCK="${BASE_DIR}/shared/ingengo-api-deploy.lock"
 readonly HEALTH_URL="http://127.0.0.1:4010/api/v1/docs"
 
 if [[ "$#" -ne 1 ]]; then
