@@ -1,7 +1,7 @@
 # Ingengo API Agent Rules
 
-These instructions apply to the entire API repository, whose GitHub remote still uses the
-`budgetify-api` name. Read [the Git and pull request rules](.agents/git.md) before editing.
+These instructions apply to `nexcoderw/ingengo-api`. Read [the Git and pull request
+rules](.agents/git.md) before editing.
 
 ## Required Workflow
 
