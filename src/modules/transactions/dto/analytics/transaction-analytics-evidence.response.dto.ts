@@ -19,7 +19,7 @@ export class TransactionAnalyticsConfirmationResponseDto {
 
   @ApiProperty({
     description:
-      'Completed outgoing transactions manually confirmed through Budgetify and without stronger provider API or SMS evidence.',
+      'Completed outgoing transactions manually confirmed through Ingengo and without stronger provider API or SMS evidence.',
 
     example: 3,
   })
