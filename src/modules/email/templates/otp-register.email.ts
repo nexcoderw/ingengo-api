@@ -11,12 +11,12 @@ export function buildOtpRegisterEmail(
   email: string,
 ): EmailPayload {
   return {
-    subject: 'Welcome to Budgetify — verify your email',
+    subject: 'Welcome to Ingengo — verify your email',
 
     html: buildBaseEmailTemplate({
-      title: 'Welcome to Budgetify',
+      title: 'Welcome to Ingengo',
 
-      previewText: 'Your 4-digit Budgetify verification code is inside.',
+      previewText: 'Your 4-digit Ingengo verification code is inside.',
 
       bodyHtml: `
           <p style="margin:0 0 8px;color:#f5f1e8;font-size:28px;font-weight:700;letter-spacing:-0.04em;">
@@ -24,7 +24,7 @@ export function buildOtpRegisterEmail(
           </p>
 
           <p style="margin:0 0 24px;color:#9ea6b2;font-size:14px;line-height:1.7;">
-            Enter this 4-digit code in Budgetify to verify
+            Enter this 4-digit code in Ingengo to verify
             <span style="color:#f5f1e8;">${email}</span>.
             It expires in 10 minutes.
           </p>
