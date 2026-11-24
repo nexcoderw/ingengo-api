@@ -33,7 +33,7 @@ readonly NEXT_LINK="${BASE_DIR}/.api-next-${GIT_SHA:0:12}"
 exec 9>"$DEPLOY_LOCK"
 
 if ! flock -n 9; then
-  printf 'Another Budgetify API deployment is already running.\n' >&2
+  printf 'Another Ingengo API deployment is already running.\n' >&2
   exit 75
 fi
 
@@ -121,7 +121,7 @@ for attempt in $(seq 1 30); do
 done
 
 if [[ "$health_check_passed" -ne 1 ]]; then
-  printf 'Budgetify API failed its health check after deployment.\n' >&2
+  printf 'Ingengo API failed its health check after deployment.\n' >&2
   exit 1
 fi
 
@@ -136,6 +136,6 @@ find "$RELEASES_DIR" \
 
 deployment_succeeded=1
 
-printf 'Budgetify API deployed commit %s as release %s.\n' \
+printf 'Ingengo API deployed commit %s as release %s.\n' \
   "$GIT_SHA" \
   "$RELEASE_NAME"
