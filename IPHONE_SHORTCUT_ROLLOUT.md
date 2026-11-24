@@ -33,8 +33,8 @@ Do not create a real Shortcut credential until this gate passes.
 4. On the server, run the privacy-safe verifier as the deployment user:
 
    ```bash
-   sudo -iu budgetify
-   cd /var/www/budgetify/api
+   sudo -iu ingengo
+   cd /var/www/ingengo/api
    bash deploy/verify-iphone-shortcut-pilot.sh
    ```
 
