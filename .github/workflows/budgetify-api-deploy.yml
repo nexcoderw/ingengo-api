@@ -1,4 +1,4 @@
-name: Budgetify API CI/CD
+name: Ingengo API CI/CD
 
 on:
   pull_request:
@@ -27,7 +27,7 @@ jobs:
       OTP_HASH_SECRET: 12345678901234567890123456789012
       GOOGLE_CLIENT_IDS: dummy-google-client-id
       RESEND_API_KEY: re_ci_placeholder
-      RESEND_FROM: Budgetify <no-reply@example.com>
+      RESEND_FROM: Ingengo <no-reply@example.com>
     steps:
       - name: Checkout
         uses: actions/checkout@v6
