@@ -2,15 +2,15 @@
 
 set -Eeuo pipefail
 
-readonly PROJECT_NAME="budgetify"
-readonly APP_NAME="budgetify-api"
+readonly PROJECT_NAME="ingengo"
+readonly APP_NAME="ingengo-api"
 readonly BASE_DIR="/var/www/${PROJECT_NAME}"
 readonly RELEASES_DIR="${BASE_DIR}/releases/api"
 readonly SHARED_ENV="${BASE_DIR}/shared/api/.env.production"
 readonly LIVE_LINK="${BASE_DIR}/api"
 readonly INCOMING_DIR="${BASE_DIR}/incoming"
-readonly PM2_CONFIG="${BASE_DIR}/shared/pm2/budgetify-api.ecosystem.config.cjs"
-readonly DEPLOY_LOCK="${BASE_DIR}/shared/budgetify-api-deploy.lock"
+readonly PM2_CONFIG="${BASE_DIR}/shared/pm2/ingengo-api.ecosystem.config.cjs"
+readonly DEPLOY_LOCK="${BASE_DIR}/shared/ingengo-api-deploy.lock"
 readonly HEALTH_URL="http://127.0.0.1:4010/api/v1/docs"
 
 if [[ "$#" -ne 1 ]]; then
@@ -33,7 +33,7 @@ readonly NEXT_LINK="${BASE_DIR}/.api-next-${GIT_SHA:0:12}"
 exec 9>"$DEPLOY_LOCK"
 
 if ! flock -n 9; then
-  printf 'Another Budgetify API deployment is already running.\n' >&2
+  printf 'Another Ingengo API deployment is already running.\n' >&2
   exit 75
 fi
 
@@ -121,7 +121,7 @@ for attempt in $(seq 1 30); do
 done
 
 if [[ "$health_check_passed" -ne 1 ]]; then
-  printf 'Budgetify API failed its health check after deployment.\n' >&2
+  printf 'Ingengo API failed its health check after deployment.\n' >&2
   exit 1
 fi
 
@@ -136,6 +136,6 @@ find "$RELEASES_DIR" \
 
 deployment_succeeded=1
 
-printf 'Budgetify API deployed commit %s as release %s.\n' \
+printf 'Ingengo API deployed commit %s as release %s.\n' \
   "$GIT_SHA" \
   "$RELEASE_NAME"

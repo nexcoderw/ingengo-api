@@ -52,7 +52,7 @@ export function ApiRecordReceivedManualEndpoint(): MethodDecorator {
       summary: 'Manually record a received payment',
 
       description:
-        'Records a user-reported incoming payment. This is primarily the fallback for platforms such as iOS where Budgetify cannot inspect the SMS inbox. The transaction is stored as COMPLETED, UNCLASSIFIED, and MANUAL. Manual evidence must not be interpreted as independent provider verification.',
+        'Records a user-reported incoming payment. This is primarily the fallback for platforms such as iOS where Ingengo cannot inspect the SMS inbox. The transaction is stored as COMPLETED, UNCLASSIFIED, and MANUAL. Manual evidence must not be interpreted as independent provider verification.',
     }),
 
     ApiOkResponse({

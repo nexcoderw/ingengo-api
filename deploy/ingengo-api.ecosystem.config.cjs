@@ -1,8 +1,8 @@
 module.exports = {
   apps: [
     {
-      name: 'budgetify-api',
-      cwd: '/var/www/budgetify/api',
+      name: 'ingengo-api',
+      cwd: '/var/www/ingengo/api',
       script: 'dist/src/main.js',
       instances: 1,
       exec_mode: 'fork',
@@ -13,8 +13,8 @@ module.exports = {
       listen_timeout: 10000,
       time: true,
       merge_logs: true,
-      output: '/var/www/budgetify/shared/logs/budgetify-api.out.log',
-      error: '/var/www/budgetify/shared/logs/budgetify-api.error.log',
+      output: '/var/www/ingengo/shared/logs/ingengo-api.out.log',
+      error: '/var/www/ingengo/shared/logs/ingengo-api.error.log',
       env_production: {
         NODE_ENV: 'production',
       },

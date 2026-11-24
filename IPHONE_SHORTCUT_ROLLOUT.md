@@ -33,15 +33,15 @@ Do not create a real Shortcut credential until this gate passes.
 4. On the server, run the privacy-safe verifier as the deployment user:
 
    ```bash
-   sudo -iu budgetify
-   cd /var/www/budgetify/api
+   sudo -iu ingengo
+   cd /var/www/ingengo/api
    bash deploy/verify-iphone-shortcut-pilot.sh
    ```
 
 5. The verifier must confirm the shared environment permissions and symlink,
    pilot scope, PM2 status, local and public HTTPS health, and the Shortcut
    endpoint's unauthenticated `401` response.
-6. Open Budgetify on the pilot iPhone and confirm that Message review and
+6. Open Ingengo on the pilot iPhone and confirm that Message review and
    iPhone import setup both load successfully.
 
 Stop the rollout when any check fails. Fix the failed check and rerun the
@@ -54,7 +54,7 @@ ingestion, or automation behavior.
 
 ### Create the scoped credential
 
-1. Sign in to Budgetify on the pilot iPhone.
+1. Sign in to Ingengo on the pilot iPhone.
 2. Open **History → actions → Review iPhone imports**.
 3. Open **iPhone Shortcut setup**.
 4. Enter a recognizable device name and create the secure credential.
@@ -62,15 +62,15 @@ ingestion, or automation behavior.
    Shortcut. Never send them through chat, email, screenshots, or source code.
 6. Clear the clipboard after both values are saved in the Shortcut.
 
-### Build Budgetify MTN Import v1
+### Build Ingengo MTN Import v1
 
-In Apple Shortcuts, create a shortcut named `Budgetify MTN Import v1` with
+In Apple Shortcuts, create a shortcut named `Ingengo MTN Import v1` with
 these actions in this order:
 
 1. **Generate UUID**. Keep this value as `clientEventId` for the current run.
 2. **Current Date**.
 3. **Format Date** using ISO 8601 with the timezone included.
-4. **Get Contents of URL** using the request URL copied from Budgetify.
+4. **Get Contents of URL** using the request URL copied from Ingengo.
 5. Set the method to `POST` and the request body to `JSON`.
 6. Add the header `Authorization` with the value `Bearer [one-time token]`.
 7. Configure the JSON body exactly as follows:
@@ -94,14 +94,14 @@ the same request is retried.
 2. Select only the verified MTN MoMo sender used on the pilot phone.
 3. Select **Run Immediately** and disable run notifications when iOS offers
    that option.
-4. Run `Budgetify MTN Import v1` and pass the received Message as its input.
+4. Run `Ingengo MTN Import v1` and pass the received Message as its input.
 5. Do not add bank or Airtel senders to this pilot automation.
 
 ### Accept the first pilot import
 
 1. Trigger one genuine MTN MoMo payment notification.
 2. Confirm the automation finishes without displaying or logging the token.
-3. Open Budgetify Message review and confirm the import is `Pending`.
+3. Open Ingengo Message review and confirm the import is `Pending`.
 4. Compare the provider, direction, amount, date, sender, fee, and reference
    with the notification on the phone. Do not copy the notification elsewhere.
 5. Correct any wrong field before confirming. Dismiss the import if its source
@@ -113,7 +113,7 @@ the same request is retried.
 
 ## Supervised pilot procedure
 
-1. Install the reviewed Shortcut version shown by the Budgetify setup screen.
+1. Install the reviewed Shortcut version shown by the Ingengo setup screen.
 2. Confirm that its JSON body includes `shortcutVersion`.
 3. Trigger one real payment notification on the pilot iPhone.
 4. Confirm that the import appears in Message review as pending.

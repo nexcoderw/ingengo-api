@@ -17,13 +17,13 @@ export function buildPasswordOtpEmail(
 
   return {
     subject: isRecovery
-      ? 'Reset your Budgetify password'
-      : 'Create your Budgetify password',
+      ? 'Reset your Ingengo password'
+      : 'Create your Ingengo password',
 
     html: buildBaseEmailTemplate({
       title: isRecovery ? 'Reset your password' : 'Create your password',
 
-      previewText: 'Your 4-digit Budgetify verification code is inside.',
+      previewText: 'Your 4-digit Ingengo verification code is inside.',
 
       bodyHtml: `
           <p style="margin:0 0 8px;color:#f5f1e8;font-size:28px;font-weight:700;letter-spacing:-0.04em;">

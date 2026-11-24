@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class LogoutRequestDto {
   @ApiProperty({
-    description: 'Current Budgetify refresh token to revoke.',
+    description: 'Current Ingengo refresh token to revoke.',
     example:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.refresh-token-example.signature',
   })

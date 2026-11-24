@@ -35,7 +35,7 @@ export function buildBaseEmailTemplate({
           <tr>
             <td style="padding:0 0 14px 4px;">
               <span style="display:inline-block;border:1px solid rgba(199,191,167,0.14);border-radius:999px;background:rgba(199,191,167,0.08);padding:7px 12px;color:#d3ccb8;font-size:13px;font-weight:700;letter-spacing:-0.02em;">
-                Budgetify
+                Ingengo
               </span>
             </td>
           </tr>

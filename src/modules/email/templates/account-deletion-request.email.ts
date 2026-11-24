@@ -16,7 +16,7 @@ export function buildAccountDeletionRequestEmail(
   const deletionDate = formatDeletionDate(scheduledFor);
 
   return {
-    subject: 'Your Budgetify account deletion request was received',
+    subject: 'Your Ingengo account deletion request was received',
     html: buildBaseEmailTemplate({
       title: 'Account deletion requested',
       previewText:
@@ -29,7 +29,7 @@ export function buildAccountDeletionRequestEmail(
           We received your account deletion request.
         </h1>
         <p style="margin:0 0 18px;color:#a9b1bd;font-size:14px;line-height:1.75;">
-          Your Budgetify account is now scheduled for deletion on <span style="color:#f6f7f9;font-weight:700;">${deletionDate}</span>.
+          Your Ingengo account is now scheduled for deletion on <span style="color:#f6f7f9;font-weight:700;">${deletionDate}</span>.
         </p>
         <div style="margin:0 0 18px;border:1px solid #232832;border-radius:18px;background:#0d1014;padding:16px 18px;">
           <p style="margin:0;color:#d9dee7;font-size:13px;line-height:1.75;">

@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-readonly ENV_FILE="${BUDGETIFY_ENV_FILE:-/var/www/budgetify/shared/api/.env.production}"
-readonly APP_DIR="${BUDGETIFY_APP_DIR:-/var/www/budgetify/api}"
-readonly PM2_APP_NAME="${BUDGETIFY_PM2_APP_NAME:-budgetify-api}"
+readonly ENV_FILE="${INGENGO_ENV_FILE:-/var/www/ingengo/shared/api/.env.production}"
+readonly APP_DIR="${INGENGO_APP_DIR:-/var/www/ingengo/api}"
+readonly PM2_APP_NAME="${INGENGO_PM2_APP_NAME:-ingengo-api}"
 
 fail() {
   printf 'FAILED: %s\n' "$1" >&2
@@ -103,4 +103,4 @@ shortcut_status="$(curl --silent --output /dev/null --write-out '%{http_code}' \
 [[ "$shortcut_status" == '401' ]] || fail "Shortcut endpoint guard returned HTTP ${shortcut_status}; expected 401 without a credential"
 pass 'Shortcut endpoint is public, reachable, and credential-protected'
 
-printf '\nBudgetify iPhone Shortcut pilot verification passed.\n'
+printf '\nIngengo iPhone Shortcut pilot verification passed.\n'

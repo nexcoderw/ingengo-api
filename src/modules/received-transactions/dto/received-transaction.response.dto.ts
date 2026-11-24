@@ -30,7 +30,7 @@ export class ReceivedTransactionResponseDto {
   @ApiProperty({
     enum: ReceivedTransactionEvidenceSource,
     description:
-      'Where the evidence came from. PROVIDER_SMS means structured data parsed by the client from an SMS; it does not mean Budgetify independently verified the transaction with the provider.',
+      'Where the evidence came from. PROVIDER_SMS means structured data parsed by the client from an SMS; it does not mean Ingengo independently verified the transaction with the provider.',
   })
   evidenceSource!: ReceivedTransactionEvidenceSource;
 

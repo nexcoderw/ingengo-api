@@ -13,12 +13,12 @@ export function buildOtpLoginEmail(
   const greeting = firstName ? `Hi ${firstName}` : 'Welcome back';
 
   return {
-    subject: 'Your Budgetify sign-in code',
+    subject: 'Your Ingengo sign-in code',
 
     html: buildBaseEmailTemplate({
-      title: 'Sign in to Budgetify',
+      title: 'Sign in to Ingengo',
 
-      previewText: 'Your 4-digit Budgetify sign-in code is inside.',
+      previewText: 'Your 4-digit Ingengo sign-in code is inside.',
 
       bodyHtml: `
           <p style="margin:0 0 8px;color:#f5f1e8;font-size:28px;font-weight:700;letter-spacing:-0.04em;">

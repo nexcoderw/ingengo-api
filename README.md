@@ -1,6 +1,6 @@
-# Budgetify API
+# Ingengo API
 
-Budgetify API is the backend service that powers the Budgetify web and mobile
+Ingengo API is the backend service that powers the Ingengo web and mobile
 clients. It handles authentication, user sessions, ledger data, recurring todo
 logic, file-backed todo images, and the filtering/search infrastructure used by
 the product.
@@ -10,7 +10,7 @@ the product.
 - Base prefix: `/api/v1`
 - Swagger docs: `/api/v1/docs`
 - Primary purpose: serve authenticated finance and planning workflows for
-  Budgetify clients
+  Ingengo clients
 
 ## Core Capabilities
 

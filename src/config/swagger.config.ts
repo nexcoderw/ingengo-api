@@ -8,9 +8,9 @@ import {
 
 export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
-    .setTitle('Budgetify API')
+    .setTitle('Ingengo API')
     .setDescription(
-      'Production-ready authentication API for Budgetify. Google ID tokens are verified server-side and exchanged for first-party JWT access and refresh tokens.',
+      'Production-ready authentication API for Ingengo. Google ID tokens are verified server-side and exchanged for first-party JWT access and refresh tokens.',
     )
     .setVersion('1.0.0')
     .addBearerAuth(
@@ -18,7 +18,7 @@ export function setupSwagger(app: INestApplication): void {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        description: 'Budgetify access token',
+        description: 'Ingengo access token',
       },
       'access-token',
     )
