@@ -11,43 +11,31 @@ import {
 } from './financial-message-parser.types';
 import { identifyFinancialMessageProvider } from './financial-message-provider.registry';
 
-const PARSER_VERSION = 'rw-financial-message-v2';
+const PARSER_VERSION = 'rw-financial-message-v1';
 
 @Injectable()
 export class FinancialMessageParserService {
   parse(input: FinancialMessageParserInput): FinancialMessageParserResult {
     const message = input.message.normalize('NFKC').replace(/\s+/g, ' ').trim();
-
     const providerCode = this.providerCode(message, input.messageSender);
-
     const direction = this.direction(message);
-
-    const { amount, fee, feeAmbiguous } = this.extractMonetaryValues(message);
-
+    const amount = this.moneyValue(message, false);
+    const fee = this.moneyValue(message, true);
     const providerReference = this.providerReference(message);
     const senderIdentifier = this.senderIdentifier(message);
     const senderName = this.senderName(message);
     const accountLastFour = this.accountLastFour(message);
-
-    const parseStatus = this.parseStatus(
-      direction,
-      amount,
-      providerCode,
-      feeAmbiguous,
-    );
-
     const parseConfidence = this.confidence({
       providerCode,
       direction,
       amount,
       providerReference,
-      parseStatus,
     });
 
     return {
       providerCode,
       direction,
-      parseStatus,
+      parseStatus: this.parseStatus(direction, amount, providerCode),
       currency: amount === null ? null : Currency.RWF,
       amount,
       fee,
@@ -80,114 +68,43 @@ export class FinancialMessageParserService {
       return FinancialMessageDirection.REVERSAL;
     }
 
-    let accountEvidence = message;
-
-    if (/\b(?:recipient|beneficiary|sender|payer)\b/i.test(message)) {
-      accountEvidence = message.replace(
-        /\b(?:(?:recipient|beneficiary)\s+(?:(?:has|have|just)\s+)*(?:received|credited)|(?:sender|payer)\s+(?:(?:has|have|just)\s+)*(?:sent|paid))\b/gi,
-        '',
-      );
-    }
-
-    const hasCredit =
+    if (
       /\b(?:received|credited|credit alert|deposit(?:ed)?|incoming)\b/i.test(
-        accountEvidence,
-      );
-
-    const hasDebit =
-      /\b(?:sent|debited|debit alert|paid|withdrawn|purchase)\b/i.test(
-        accountEvidence,
-      );
-
-    if (hasCredit === hasDebit) {
-      return FinancialMessageDirection.UNKNOWN;
+        message,
+      )
+    ) {
+      return FinancialMessageDirection.CREDIT;
     }
 
-    return hasCredit
-      ? FinancialMessageDirection.CREDIT
-      : FinancialMessageDirection.DEBIT;
-  }
-
-  private extractMonetaryValues(message: string): {
-    amount: number | null;
-    fee: number | null;
-    feeAmbiguous: boolean;
-  } {
-    const moneyPattern =
-      /\b(?:RWF|FRW)\s*([+-]?\d+(?:[,.]+\d+| \d+)*)(?!\w|[,.]\d)|(?<![\w.,+-])([+-]?\d+(?:[,.]+\d+| \d+)*)\s*(?:RWF|FRW)\b/gi;
-
-    let amount: number | null = null;
-    let fee: number | null = null;
-
-    let amountCount = 0;
-    let feeCount = 0;
-    let previousEnd = 0;
-
-    let match: RegExpExecArray | null;
-
-    while ((match = moneyPattern.exec(message)) !== null) {
-      const start = match.index;
-      const end = moneyPattern.lastIndex;
-
-      const before = message.slice(Math.max(previousEnd, start - 80), start);
-
-      const after = message.slice(end, end + 60);
-
-      previousEnd = end;
-
-      const isBalance =
-        /\bbalance(?:\s+(?:is|was|of))?\s*[:=]?\s*$/i.test(before) ||
-        /^\s+(?:(?:available|remaining|current|new)\s+)?balance\b(?=\s*(?:[.;,]|$))/i.test(
-          after,
-        );
-
-      if (isBalance) {
-        continue;
-      }
-
-      const isFee =
-        /\b(?:fees?|charges?|commission)(?:\s+(?:is|was|of|charged))?\s*[:=]?\s*$/i.test(
-          before,
-        ) ||
-        /^\s+(?:fees?|charges?|commission)\b(?=\s*(?:[.;,]|$))/i.test(after);
-
-      const rawValue = match[1] ?? match[2];
-
-      if (rawValue === undefined) {
-        continue;
-      }
-
-      if (isFee) {
-        feeCount++;
-
-        if (feeCount === 1) {
-          fee = this.normalizeMonetaryValue(rawValue);
-        }
-      } else {
-        amountCount++;
-
-        if (amountCount === 1) {
-          amount = this.normalizeMonetaryValue(rawValue);
-        }
-      }
+    if (
+      /\b(?:sent|debited|debit alert|paid|withdrawn|purchase)\b/i.test(message)
+    ) {
+      return FinancialMessageDirection.DEBIT;
     }
 
-    return {
-      amount: amountCount === 1 ? amount : null,
-      fee: feeCount === 1 ? fee : null,
-      feeAmbiguous: feeCount > 1 || (feeCount === 1 && fee === null),
-    };
+    return FinancialMessageDirection.UNKNOWN;
   }
 
-  private normalizeMonetaryValue(rawValue: string): number | null {
-    const validFormat =
-      /^\+?(?:\d+|\d{1,3}(?:,\d{3})+|\d{1,3}(?: \d{3})+)(?:\.0+)?$/;
+  private moneyValue(message: string, feeOnly: boolean): number | null {
+    const scope = feeOnly
+      ? message.match(/\b(?:fee|charge|commission)\b[^.;\n]*/i)?.[0]
+      : message;
 
-    if (!validFormat.test(rawValue)) {
+    if (!scope) {
       return null;
     }
 
-    const normalized = rawValue.replace(/[ ,]/g, '');
+    const currencyFirst = scope.match(
+      /\b(?:RWF|FRW)\s*([0-9][0-9\s,.]*)(?=\s|[.;,]|$)/i,
+    );
+    const currencyLast = scope.match(/\b([0-9][0-9\s,.]*)\s*(?:RWF|FRW)\b/i);
+    const captured = currencyFirst?.[1] ?? currencyLast?.[1];
+
+    if (!captured) {
+      return null;
+    }
+
+    const normalized = captured.replace(/[\s,]/g, '');
     const value = Number(normalized);
 
     return Number.isSafeInteger(value) && value >= 0 ? value : null;
@@ -237,14 +154,9 @@ export class FinancialMessageParserService {
     direction: FinancialMessageDirection,
     amount: number | null,
     providerCode: string | null,
-    feeAmbiguous: boolean,
   ): FinancialMessageParseStatus {
     if (direction === FinancialMessageDirection.DEBIT) {
       return FinancialMessageParseStatus.REJECTED;
-    }
-
-    if (feeAmbiguous) {
-      return FinancialMessageParseStatus.NEEDS_DETAILS;
     }
 
     if (
@@ -263,22 +175,13 @@ export class FinancialMessageParserService {
     direction: FinancialMessageDirection;
     amount: number | null;
     providerReference: string | null;
-    parseStatus: FinancialMessageParseStatus;
   }): number {
     let confidence = 0;
-
     confidence += values.providerCode === null ? 0 : 0.25;
-
     confidence +=
       values.direction === FinancialMessageDirection.UNKNOWN ? 0 : 0.3;
-
     confidence += values.amount === null ? 0 : 0.35;
-
     confidence += values.providerReference === null ? 0 : 0.1;
-
-    if (values.parseStatus === FinancialMessageParseStatus.NEEDS_DETAILS) {
-      return Math.min(confidence, 0.5);
-    }
 
     return confidence;
   }
