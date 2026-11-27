@@ -4,6 +4,7 @@ import {
 } from '@prisma/client';
 
 import { FinancialMessageParserService } from './financial-message-parser.service';
+import { parserRegressionCases } from './financial-message-parser.regression-cases';
 
 describe('FinancialMessageParserService', () => {
   const parser = new FinancialMessageParserService();
@@ -60,5 +61,88 @@ describe('FinancialMessageParserService', () => {
 
     expect(result.providerCode).toBeNull();
     expect(result.parseStatus).toBe(FinancialMessageParseStatus.NEEDS_DETAILS);
+  });
+
+  describe('financial message parser regression cases', () => {
+    it.each(parserRegressionCases)('$name', ({ message, expected }) => {
+      const result = parser.parse({
+        message,
+        messageSender: 'M-Money',
+        messageReceivedAt: receivedAt,
+      });
+
+      expect(result).toMatchObject(expected);
+    });
+  });
+
+  describe('confidence and ambiguity handling', () => {
+    it.each([
+      {
+        name: 'multiple conflicting fees',
+        message:
+          'MTN MoMo: You received RWF 5,000. Fee RWF 100. Commission RWF 200. Ref: DEMO101.',
+        amount: 5000,
+        direction: FinancialMessageDirection.CREDIT,
+      },
+      {
+        name: 'invalid fee formatting',
+        message:
+          'MTN MoMo: You received RWF 5,000. Fee RWF 5,00. Ref: DEMO102.',
+        amount: 5000,
+        direction: FinancialMessageDirection.CREDIT,
+      },
+      {
+        name: 'negative fee',
+        message:
+          'MTN MoMo: You received RWF 5,000. Fee RWF -100. Ref: DEMO103.',
+        amount: 5000,
+        direction: FinancialMessageDirection.CREDIT,
+      },
+      {
+        name: 'conflicting transaction amounts',
+        message:
+          'MTN MoMo: You received RWF 5,000 and RWF 7,000. Ref: DEMO104.',
+        amount: null,
+        direction: FinancialMessageDirection.CREDIT,
+      },
+      {
+        name: 'conflicting transaction directions',
+        message:
+          'MTN MoMo: You received RWF 5,000. You sent funds. Ref: DEMO105.',
+        amount: 5000,
+        direction: FinancialMessageDirection.UNKNOWN,
+      },
+    ])(
+      'requires review and reduces confidence for $name',
+      ({ message, amount, direction }) => {
+        const result = parser.parse({
+          message,
+          messageSender: 'M-Money',
+          messageReceivedAt: receivedAt,
+        });
+
+        expect(result.amount).toBe(amount);
+        expect(result.fee).toBeNull();
+        expect(result.direction).toBe(direction);
+        expect(result.parseStatus).toBe(
+          FinancialMessageParseStatus.NEEDS_DETAILS,
+        );
+        expect(result.parseConfidence).toBeLessThanOrEqual(0.5);
+      },
+    );
+
+    it('preserves maximum confidence for complete valid evidence', () => {
+      const result = parser.parse({
+        message: 'MTN MoMo: You received RWF 5,000. Fee RWF 0. Ref: DEMO106.',
+        messageSender: 'M-Money',
+        messageReceivedAt: receivedAt,
+      });
+
+      expect(result.amount).toBe(5000);
+      expect(result.fee).toBe(0);
+      expect(result.direction).toBe(FinancialMessageDirection.CREDIT);
+      expect(result.parseStatus).toBe(FinancialMessageParseStatus.PARSED);
+      expect(result.parseConfidence).toBeCloseTo(1);
+    });
   });
 });
